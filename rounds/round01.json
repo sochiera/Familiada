@@ -1,0 +1,10 @@
+{
+  "answers": [
+    {"rank": 1, "text": "Jan",   "points": 45},
+    {"rank": 2, "text": "Dawid", "points": 20},
+    {"rank": 3, "text": "Anna",  "points": 15},
+    {"rank": 4, "text": "Marek", "points": 10},
+    {"rank": 5, "text": "Ewa",   "points":  7},
+    {"rank": 6, "text": "Piotr", "points":  3}
+  ]
+}
