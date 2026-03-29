@@ -29,8 +29,8 @@ class SoundManager:
                 return
         self._cache[filename].play()
 
-    def play_reveal_word(self):  self._play("wait_for_it.mp3")
-    def play_reveal_score(self): self._play("good.mp3")
-    def play_wrong(self):        self._play("wrong.mp3")
-    def play_transfer(self):     self._play("finish.mp3")
-    def play_game_over(self):    self._play("finish.mp3")
+    def play_reveal_word(self):  self._play("wait_for_it_normalized.mp3")
+    def play_reveal_score(self): self._play("good_normalized.mp3")
+    def play_wrong(self):        self._play("wrong_normalized.mp3")
+    def play_transfer(self):     self._play("finish_normalized.mp3")
+    def play_game_over(self):    self._play("finish_normalized.mp3")
