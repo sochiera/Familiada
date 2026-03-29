@@ -17,7 +17,8 @@ class Round:
 class GameState:
     rounds:      tuple  # tuple of Round objects (all rounds, never mutated)
     round_index: int
-    revealed:    tuple  # tuple of 6 bool — True means answer is shown
+    # 0 = hidden, 1 = word visible (score still hidden), 2 = fully revealed
+    revealed:    tuple  # tuple of 6 int
     x_left:      tuple  # tuple of 3 bool — left-side X marks
     x_right:     tuple  # tuple of 3 bool — right-side X marks
     team1_score: int
@@ -29,7 +30,7 @@ def make_initial_state(rounds: list) -> GameState:
     return GameState(
         rounds=tuple(rounds),
         round_index=0,
-        revealed=(False,) * 6,
+        revealed=(0,) * 6,
         x_left=(False, False, False),
         x_right=(False, False, False),
         team1_score=0,
@@ -39,26 +40,35 @@ def make_initial_state(rounds: list) -> GameState:
 
 
 def compute_suma(state: GameState) -> int:
-    """Return sum of points for all currently revealed answers."""
+    """Return sum of points for all fully revealed answers (state 2 only)."""
     round_ = state.rounds[state.round_index]
     return sum(
         ans.points
         for ans, rev in zip(round_.answers, state.revealed)
-        if rev
+        if rev == 2
     )
 
 
-def action_reveal_answer(state: GameState, row: int) -> GameState:
-    """Reveal answer at row (0-based). No-op if already revealed."""
-    if state.revealed[row]:
+def action_reveal_word(state: GameState, row: int) -> GameState:
+    """Show the answer text but keep the score hidden (0 → 1). No-op if already >= 1."""
+    if state.revealed[row] >= 1:
         return state
     lst = list(state.revealed)
-    lst[row] = True
+    lst[row] = 1
+    return replace(state, revealed=tuple(lst))
+
+
+def action_reveal_score(state: GameState, row: int) -> GameState:
+    """Show the score for a row whose word is already visible (1 → 2). No-op otherwise."""
+    if state.revealed[row] != 1:
+        return state
+    lst = list(state.revealed)
+    lst[row] = 2
     return replace(state, revealed=tuple(lst))
 
 
 def action_add_x_left(state: GameState, zone: int) -> GameState:
-    """Mark left X zone zone (0-based). No-op if already filled."""
+    """Mark left X zone (0-based). No-op if already filled."""
     if state.x_left[zone]:
         return state
     lst = list(state.x_left)
@@ -67,7 +77,7 @@ def action_add_x_left(state: GameState, zone: int) -> GameState:
 
 
 def action_add_x_right(state: GameState, zone: int) -> GameState:
-    """Mark right X zone zone (0-based). No-op if already filled."""
+    """Mark right X zone (0-based). No-op if already filled."""
     if state.x_right[zone]:
         return state
     lst = list(state.x_right)
@@ -91,7 +101,7 @@ def action_transfer_to_team(state: GameState, team: int) -> GameState:
     return replace(
         state,
         round_index=next_round,
-        revealed=(False,) * 6,
+        revealed=(0,) * 6,
         x_left=(False, False, False),
         x_right=(False, False, False),
         team1_score=t1,

@@ -5,14 +5,15 @@ import pygame
 from data import load_rounds
 from layout import COFNIJ_RECT, LEFT_X_ZONES, RIGHT_X_ZONES, ROWS
 from layout import TEAM1_RECT, TEAM2_RECT
-from layout import get_row_rect
+from layout import get_row_text_rect, get_row_score_rect
 from renderer import load_fonts, render_frame
 from sounds import SoundManager
 from state import (
     GameState,
     action_add_x_left,
     action_add_x_right,
-    action_reveal_answer,
+    action_reveal_word,
+    action_reveal_score,
     action_transfer_to_team,
     make_initial_state,
 )
@@ -37,25 +38,40 @@ def handle_click(pos: tuple, ctx: dict, push, sounds: SoundManager, rounds: list
             ctx["state"] = ctx["history"].pop()
         return
 
-    # Answer rows (click anywhere in the row to reveal)
+    # Answer rows — two-step reveal:
+    #   click on text/dots area → reveal word only (0 → 1)
+    #   click on score area     → reveal score     (1 → 2)
     for i in range(ROWS):
-        if get_row_rect(i).collidepoint(pos):
-            push(action_reveal_answer(state, i))
-            sounds.play_reveal()
+        if get_row_text_rect(i).collidepoint(pos):
+            new_state = action_reveal_word(state, i)
+            if new_state is not state:
+                push(new_state)
+                sounds.play_reveal_word()
+            return
+
+        if get_row_score_rect(i).collidepoint(pos):
+            new_state = action_reveal_score(state, i)
+            if new_state is not state:
+                push(new_state)
+                sounds.play_reveal_score()
             return
 
     # Left X zones
     for i, rect in enumerate(LEFT_X_ZONES):
         if rect.collidepoint(pos):
-            push(action_add_x_left(state, i))
-            sounds.play_wrong()
+            new_state = action_add_x_left(state, i)
+            if new_state is not state:
+                push(new_state)
+                sounds.play_wrong()
             return
 
     # Right X zones
     for i, rect in enumerate(RIGHT_X_ZONES):
         if rect.collidepoint(pos):
-            push(action_add_x_right(state, i))
-            sounds.play_wrong()
+            new_state = action_add_x_right(state, i)
+            if new_state is not state:
+                push(new_state)
+                sounds.play_wrong()
             return
 
     # Team score counters

@@ -1,19 +1,36 @@
+import pathlib
+
+import pygame
+
+
 class SoundManager:
     """
-    Stub SoundManager — all methods are no-ops until sound assets are added.
+    Loads and plays sound effects from the sounds/ directory.
+    Missing files are silently ignored so the game always runs.
 
-    To wire up sounds later:
-    1. Place MP3/WAV files in the sounds/ directory:
-         sounds/reveal.mp3    — played when an answer is revealed
-         sounds/wrong.mp3     — played when an X mark is added
-         sounds/transfer.mp3  — played when score is transferred to a team
-         sounds/gameover.mp3  — played on the KONIEC GRY screen
-    2. Initialize pygame.mixer before creating SoundManager.
-    3. Replace each pass with:
-         pygame.mixer.Sound("sounds/X.mp3").play()
+    Available files used:
+      sounds/wait_for_it.mp3  — word revealed (step 1)
+      sounds/good.mp3         — full answer revealed (step 2)
+      sounds/wrong.mp3        — X mark added
+      sounds/finish.mp3       — score transferred to a team / round end
     """
 
-    def play_reveal(self): pass
-    def play_wrong(self): pass
-    def play_transfer(self): pass
-    def play_game_over(self): pass
+    def __init__(self) -> None:
+        self._cache: dict = {}
+
+    def _play(self, filename: str) -> None:
+        path = pathlib.Path("sounds") / filename
+        if not path.exists():
+            return
+        if filename not in self._cache:
+            try:
+                self._cache[filename] = pygame.mixer.Sound(str(path))
+            except Exception:
+                return
+        self._cache[filename].play()
+
+    def play_reveal_word(self):  self._play("wait_for_it.mp3")
+    def play_reveal_score(self): self._play("good.mp3")
+    def play_wrong(self):        self._play("wrong.mp3")
+    def play_transfer(self):     self._play("finish.mp3")
+    def play_game_over(self):    self._play("finish.mp3")

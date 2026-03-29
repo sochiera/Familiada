@@ -13,8 +13,7 @@ from layout import (
 )
 from state import compute_suma
 
-# Total character width of the "rank + text + dots" portion of a row string.
-# With a monospace font this keeps all rows the same pixel width.
+# Total character width of the "rank + text/dots" portion (monospace).
 BODY_CHARS = 34
 
 
@@ -62,34 +61,45 @@ def load_fonts() -> dict:
         "board": F(52),   # answer rows
         "score": F(64),   # team score numbers
         "label": F(42),   # SUMA label, team labels
-        "x":     F(180),  # large X mark
+        "x":     F(200),  # large X — will be scaled down to fit the box
         "small": F(30),   # COFNIJ button, hints
     }
 
 
-def build_row_string(rank: int, text: str, points) -> str:
+def build_row_string(rank: int, text: str, reveal_state: int, points: int) -> str:
     """
-    Build a fixed-width row string: "rank text....dots pts"
-    points=None means unrevealed (shown as "--").
+    Build a fixed-width row string.
+    reveal_state: 0 = hidden, 1 = word visible (score hidden), 2 = fully revealed.
 
     Because the font is monospace, every row occupies the same pixel width
-    regardless of whether the answer is revealed, so the board never shifts.
+    regardless of content, so the board never shifts.
     """
-    pts = f"{points:>3}" if points is not None else " --"
+    pts = f"{points:>3}" if reveal_state == 2 else " --"
+    display_text = text if reveal_state >= 1 else ""
 
     rank_str = str(rank)
-    if text:
-        # space after rank, space before dots
-        inner_width = BODY_CHARS - len(rank_str) - 1  # rank + space
-        # text + space + dots must fit in inner_width
-        dots_count = max(0, inner_width - len(text) - 1)
-        body = f"{rank_str} {text} {'.' * dots_count}"
+    if display_text:
+        dots_count = max(0, BODY_CHARS - len(rank_str) - 1 - len(display_text) - 1)
+        body = f"{rank_str} {display_text} {'.' * dots_count}"
     else:
         dots_count = BODY_CHARS - len(rank_str) - 1
         body = f"{rank_str} {'.' * dots_count}"
 
-    body = body[:BODY_CHARS]  # hard-truncate to prevent overflow
+    body = body[:BODY_CHARS]  # hard-truncate
     return f"{body} {pts}"
+
+
+def _draw_x_in_rect(surface: pygame.Surface, rect: pygame.Rect, fonts: dict) -> None:
+    """Render a large X scaled to fit inside rect with a small margin."""
+    x_surf = fonts["x"].render("X", True, RED)
+    margin = 16
+    max_w = rect.width - margin
+    max_h = rect.height - margin
+    scale = min(max_w / x_surf.get_width(), max_h / x_surf.get_height())
+    new_w = max(1, int(x_surf.get_width() * scale))
+    new_h = max(1, int(x_surf.get_height() * scale))
+    scaled = pygame.transform.smoothscale(x_surf, (new_w, new_h))
+    surface.blit(scaled, scaled.get_rect(center=rect.center))
 
 
 def draw_background(surface: pygame.Surface) -> None:
@@ -104,10 +114,8 @@ def draw_board_panel(surface: pygame.Surface, state, fonts: dict) -> None:
     # 6 answer rows
     round_ = state.rounds[state.round_index]
     for i, ans in enumerate(round_.answers):
-        revealed = state.revealed[i]
-        text = ans.text if revealed else ""
-        points = ans.points if revealed else None
-        row_str = build_row_string(ans.rank, text, points)
+        rev = state.revealed[i]  # 0, 1, or 2
+        row_str = build_row_string(ans.rank, ans.text, rev, ans.points)
         surf = fonts["board"].render(row_str, True, GREEN)
         y = BOARD_TOP + ROW_PADDING_TOP + i * ROW_HEIGHT
         surface.blit(surf, (BOARD_LEFT + 20, y + (ROW_HEIGHT - surf.get_height()) // 2))
@@ -123,14 +131,12 @@ def draw_x_zones(surface: pygame.Surface, state, fonts: dict) -> None:
     for i, rect in enumerate(LEFT_X_ZONES):
         pygame.draw.rect(surface, GREEN_DIM, rect, 2)
         if state.x_left[i]:
-            x_surf = fonts["x"].render("X", True, RED)
-            surface.blit(x_surf, x_surf.get_rect(center=rect.center))
+            _draw_x_in_rect(surface, rect, fonts)
 
     for i, rect in enumerate(RIGHT_X_ZONES):
         pygame.draw.rect(surface, GREEN_DIM, rect, 2)
         if state.x_right[i]:
-            x_surf = fonts["x"].render("X", True, RED)
-            surface.blit(x_surf, x_surf.get_rect(center=rect.center))
+            _draw_x_in_rect(surface, rect, fonts)
 
 
 def draw_team_scores(surface: pygame.Surface, state, fonts: dict) -> None:

@@ -4,14 +4,18 @@ SCREEN_W = 1920
 SCREEN_H = 1080
 
 # Board panel (centered horizontally, upper portion of screen)
-BOARD_LEFT   = 540
+BOARD_LEFT   = 360
 BOARD_TOP    = 100
-BOARD_WIDTH  = 840
+BOARD_WIDTH  = 1200
 BOARD_HEIGHT = 700  # 6 rows + SUMA line + padding
 
 ROW_HEIGHT      = 90
 ROW_PADDING_TOP = 30
 ROWS = 6
+
+# Width of the score click zone on the right edge of each row.
+# Clicking this area reveals the score (step 2 of two-step reveal).
+SCORE_COL_WIDTH = 110
 
 # 3 X-zones per side (outside the board panel)
 X_ZONE_W = 130
@@ -47,7 +51,16 @@ YELLOW       = (255, 220, 0)
 SUMA_Y = BOARD_TOP + ROW_PADDING_TOP + ROWS * ROW_HEIGHT + 20
 
 
-def get_row_rect(row_index: int) -> pygame.Rect:
-    """Return the clickable Rect for answer row row_index (0-based)."""
+def get_row_text_rect(row_index: int) -> pygame.Rect:
+    """Left part of a row: clicking reveals the word (step 1)."""
     y = BOARD_TOP + ROW_PADDING_TOP + row_index * ROW_HEIGHT
-    return pygame.Rect(BOARD_LEFT, y, BOARD_WIDTH, ROW_HEIGHT)
+    return pygame.Rect(BOARD_LEFT, y, BOARD_WIDTH - SCORE_COL_WIDTH, ROW_HEIGHT)
+
+
+def get_row_score_rect(row_index: int) -> pygame.Rect:
+    """Right part of a row: clicking reveals the score (step 2)."""
+    y = BOARD_TOP + ROW_PADDING_TOP + row_index * ROW_HEIGHT
+    return pygame.Rect(
+        BOARD_LEFT + BOARD_WIDTH - SCORE_COL_WIDTH, y,
+        SCORE_COL_WIDTH, ROW_HEIGHT,
+    )
