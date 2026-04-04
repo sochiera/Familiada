@@ -91,6 +91,7 @@ def test_team_rects_on_opposite_sides():
 
 
 def test_cofnij_rect_in_top_right():
-    """Undo button should be in the upper-right area of 1920×1080."""
-    assert COFNIJ_RECT.x > 1500
-    assert COFNIJ_RECT.y < 100
+    """Undo button should be in the upper-right area of the screen."""
+    from layout import SCREEN_W, SCREEN_H
+    assert COFNIJ_RECT.x > SCREEN_W * 0.8
+    assert COFNIJ_RECT.y < SCREEN_H * 0.1

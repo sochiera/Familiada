@@ -7,6 +7,7 @@ from layout import COFNIJ_RECT, LEFT_X_ZONES, RIGHT_X_ZONES
 from layout import LEFT_BIG_X_RECT, RIGHT_BIG_X_RECT
 from layout import TEAM1_RECT, TEAM2_RECT
 from layout import get_row_text_rect, get_row_score_rect
+from config import SCREEN_W, SCREEN_H, FULLSCREEN
 from renderer import load_fonts, render_frame
 from sounds import SoundManager
 from state import (
@@ -20,10 +21,6 @@ from state import (
     action_transfer_to_team,
     make_initial_state,
 )
-
-SCREEN_W = 1920
-SCREEN_H = 1080
-
 
 def handle_click(pos: tuple, ctx: dict, push, sounds: SoundManager, rounds: list) -> None:
     """Dispatch a mouse click to the appropriate game action."""
@@ -107,7 +104,8 @@ def handle_click(pos: tuple, ctx: dict, push, sounds: SoundManager, rounds: list
 
 def main() -> None:
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_W, SCREEN_H), pygame.FULLSCREEN)
+    flags = pygame.FULLSCREEN if FULLSCREEN else 0
+    screen = pygame.display.set_mode((SCREEN_W, SCREEN_H), flags)
     pygame.display.set_caption("Familiada")
     clock = pygame.time.Clock()
 

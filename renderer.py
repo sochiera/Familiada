@@ -11,6 +11,7 @@ from layout import (
     TEAM1_RECT, TEAM2_RECT,
     COFNIJ_RECT,
     BLACK, GREEN, GREEN_DIM, GREEN_BORDER, RED, YELLOW,
+    FONT_SCALE, scale_y,
 )
 from state import compute_suma
 
@@ -56,7 +57,7 @@ def load_fonts() -> dict:
         resolved_path = pygame.font.get_default_font()
 
     def F(size: int) -> pygame.font.Font:
-        return pygame.font.Font(resolved_path, size)
+        return pygame.font.Font(resolved_path, max(8, int(size * FONT_SCALE)))
 
     return {
         "board": F(40),   # answer rows
@@ -110,8 +111,8 @@ def draw_background(surface: pygame.Surface) -> None:
 def draw_board_panel(surface: pygame.Surface, state, fonts: dict) -> None:
     round_ = state.rounds[state.round_index]
     n = len(round_.answers)
-    board_h = ROW_PADDING_TOP + n * ROW_HEIGHT + 80
-    suma_y = BOARD_TOP + ROW_PADDING_TOP + n * ROW_HEIGHT + 20
+    board_h = ROW_PADDING_TOP + n * ROW_HEIGHT + scale_y(80)
+    suma_y = BOARD_TOP + ROW_PADDING_TOP + n * ROW_HEIGHT + scale_y(20)
 
     # Border
     board_rect = pygame.Rect(BOARD_LEFT, BOARD_TOP, BOARD_WIDTH, board_h)
