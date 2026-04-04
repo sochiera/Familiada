@@ -1,0 +1,12 @@
+{
+  "pytanie": "Wymień cud dokonany przez Jezusa.",
+  "odpowiedzi": [
+    {"odpowiedz": "Zmartwychwstanie Łazarza (J 11)",            "punkty": 18},
+    {"odpowiedz": "Rozmnożenie chleba i ryb (Mt 14)",           "punkty": 17},
+    {"odpowiedz": "Przemiana wody w wino (J 2)",                "punkty": 16},
+    {"odpowiedz": "Chodzenie po wodzie (Mt 14)",                "punkty": 14},
+    {"odpowiedz": "Uzdrowienie niewidomego od urodzenia (J 9)", "punkty": 13},
+    {"odpowiedz": "Uciszenie burzy na morzu (Mk 4)",            "punkty": 12},
+    {"odpowiedz": "Wskrzeszenie córki Jaira (Mk 5)",            "punkty": 10}
+  ]
+}

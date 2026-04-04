@@ -10,6 +10,7 @@ class Answer:
 
 @dataclass(frozen=True)
 class Round:
+    question: str   # pytanie wyświetlane nad tablicą
     answers: tuple  # tuple of exactly 6 Answer objects
 
 
@@ -49,12 +50,12 @@ def compute_suma(state: GameState) -> int:
     )
 
 
-def action_reveal_word(state: GameState, row: int) -> GameState:
-    """Show the answer text but keep the score hidden (0 → 1). No-op if already >= 1."""
+def action_reveal_full(state: GameState, row: int) -> GameState:
+    """Show both word and score immediately (0 → 2). No-op if already >= 1."""
     if state.revealed[row] >= 1:
         return state
     lst = list(state.revealed)
-    lst[row] = 1
+    lst[row] = 2
     return replace(state, revealed=tuple(lst))
 
 

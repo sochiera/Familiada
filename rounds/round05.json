@@ -1,0 +1,12 @@
+{
+  "pytanie": "Wymień roślinę, która pojawia się w Nowym Testamencie.",
+  "odpowiedzi": [
+    {"odpowiedz": "Drzewo oliwne/Oliwka", "punkty": 30},
+    {"odpowiedz": "Winorośl/Winogrono",   "punkty": 26},
+    {"odpowiedz": "Figowiec/Figa",        "punkty": 20},
+    {"odpowiedz": "Pszenica/Zboże",       "punkty": 10},
+    {"odpowiedz": "Gorczyca",             "punkty": 8},
+    {"odpowiedz": "Kąkol/Chwast",         "punkty": 4},
+    {"odpowiedz": "Palma",                "punkty": 2}
+  ]
+}

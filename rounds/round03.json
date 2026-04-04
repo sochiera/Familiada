@@ -1,10 +1,17 @@
 {
-  "answers": [
-    {"rank": 1, "text": "Ser",  "points": 50},
-    {"rank": 2, "text": "Ryż",   "points": 25},
-    {"rank": 3, "text": "Ciasto",  "points": 12},
-    {"rank": 4, "text": "Kawa",  "points":  8},
-    {"rank": 5, "text": "Banan","points":  3},
-    {"rank": 6, "text": "JAbłko",   "points":  2}
+  "pytanie": "Wymień imię jednego z 12 najbliższych uczniów Jezusa.",
+  "odpowiedzi": [
+    {"odpowiedz": "Piotr",            "punkty": 18},
+    {"odpowiedz": "Judasz",           "punkty": 16},
+    {"odpowiedz": "Jan",              "punkty": 14},
+    {"odpowiedz": "Mateusz",          "punkty": 12},
+    {"odpowiedz": "Tomasz",           "punkty": 10},
+    {"odpowiedz": "Andrzej",          "punkty": 8},
+    {"odpowiedz": "Jakub",            "punkty": 7},
+    {"odpowiedz": "Filip",            "punkty": 5},
+    {"odpowiedz": "Bartłomiej",       "punkty": 4},
+    {"odpowiedz": "Szymon Zelota",    "punkty": 3},
+    {"odpowiedz": "Tadeusz",          "punkty": 2},
+    {"odpowiedz": "Jakub Alfeuszowy", "punkty": 1}
   ]
 }
