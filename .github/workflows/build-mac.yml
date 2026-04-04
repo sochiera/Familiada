@@ -1,0 +1,52 @@
+name: Build macOS .app
+
+on:
+  # Uruchom ręcznie z zakładki Actions na GitHub
+  workflow_dispatch:
+  # Lub automatycznie przy pushu na main
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Pobierz kod
+        uses: actions/checkout@v4
+
+      - name: Ustaw Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Zainstaluj zależności
+        run: |
+          pip install pygame pyinstaller
+
+      - name: Pobierz czcionkę VT323 (jeśli nie ma w repo)
+        run: |
+          if [ ! -f fonts/VT323-Regular.ttf ]; then
+            echo "Pobieranie czcionki VT323..."
+            curl -L "https://github.com/googlefonts/vt323/raw/main/fonts/ttf/VT323-Regular.ttf" \
+              -o fonts/VT323-Regular.ttf
+          else
+            echo "Czcionka już jest w repozytorium."
+          fi
+
+      - name: Zbuduj .app (PyInstaller)
+        run: |
+          pyinstaller familiada.spec --noconfirm
+
+      - name: Spakuj .app do ZIP
+        run: |
+          cd dist
+          zip -r ../Familiada-macOS.zip Familiada.app
+          cd ..
+
+      - name: Wgraj artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: Familiada-macOS
+          path: Familiada-macOS.zip
+          retention-days: 30

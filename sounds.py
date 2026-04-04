@@ -1,6 +1,13 @@
 import pathlib
+import sys
 
 import pygame
+
+
+def _base_dir() -> pathlib.Path:
+    if getattr(sys, "frozen", False):
+        return pathlib.Path(sys._MEIPASS)
+    return pathlib.Path(__file__).parent
 
 
 class SoundManager:
@@ -19,7 +26,7 @@ class SoundManager:
         self._cache: dict = {}
 
     def _play(self, filename: str) -> None:
-        path = pathlib.Path("sounds") / filename
+        path = _base_dir() / "sounds" / filename
         if not path.exists():
             return
         if filename not in self._cache:

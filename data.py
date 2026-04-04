@@ -1,7 +1,14 @@
 import json
 import pathlib
+import sys
 
 from state import Answer, Round
+
+
+def _base_dir() -> pathlib.Path:
+    if getattr(sys, "frozen", False):
+        return pathlib.Path(sys._MEIPASS)
+    return pathlib.Path(__file__).parent
 
 
 def load_rounds(rounds_dir: str = "rounds") -> list:
@@ -14,7 +21,7 @@ def load_rounds(rounds_dir: str = "rounds") -> list:
         }
     Answers are taken in order, up to 10. No blank padding.
     """
-    p = pathlib.Path(rounds_dir)
+    p = _base_dir() / rounds_dir
     files = sorted(p.glob("round*.json"))
     if not files:
         raise ValueError(f"No round JSON files found in '{rounds_dir}/'. "

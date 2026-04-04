@@ -1,6 +1,13 @@
 import pathlib
+import sys
 
 import pygame
+
+
+def _base_dir() -> pathlib.Path:
+    if getattr(sys, "frozen", False):
+        return pathlib.Path(sys._MEIPASS)
+    return pathlib.Path(__file__).parent
 
 from layout import (
     SCREEN_W, SCREEN_H,
@@ -31,7 +38,7 @@ def load_fonts() -> dict:
       3. pygame default font (always available, last resort)
     """
     candidates = [
-        ("file", "fonts/VT323-Regular.ttf"),
+        ("file", str(_base_dir() / "fonts" / "VT323-Regular.ttf")),
         ("sys",  "vt323"),
         ("sys",  "pressstart2p"),
         ("sys",  "couriernew"),
