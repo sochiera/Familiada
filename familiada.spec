@@ -3,9 +3,6 @@
 # PyInstaller spec file for Familiada (macOS .app bundle)
 # Build command:  pyinstaller familiada.spec
 
-import sys
-from pathlib import Path
-
 block_cipher = None
 
 a = Analysis(

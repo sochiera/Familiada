@@ -9,34 +9,38 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13   # Intel x86_64 — działa na Intel i Apple Silicon (Rosetta 2)
+    runs-on: macos-latest   # Apple Silicon — budujemy universal2 (Intel + ARM w jednym)
 
     steps:
       - name: Pobierz kod
         uses: actions/checkout@v4
 
-      - name: Ustaw Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Zainstaluj Python 3.12 universal2 (z python.org)
+        run: |
+          # Oficjalny installer python.org to jedyny pewny sposób na universal2 build.
+          # Jeśli kiedyś URL przestanie działać, zmień wersję na aktualną 3.12.x z python.org/downloads
+          curl -fsSL https://www.python.org/ftp/python/3.12.9/python-3.12.9-macos11.pkg -o python.pkg
+          sudo installer -pkg python.pkg -target /
+          echo "/Library/Frameworks/Python.framework/Versions/3.12/bin" >> $GITHUB_PATH
 
       - name: Zainstaluj zależności
         run: |
-          pip install pygame pyinstaller
+          python3.12 -m pip install --upgrade pip
+          python3.12 -m pip install pygame pyinstaller
 
       - name: Pobierz czcionkę VT323 (jeśli nie ma w repo)
         run: |
           if [ ! -f fonts/VT323-Regular.ttf ]; then
             echo "Pobieranie czcionki VT323..."
-            curl -L "https://github.com/googlefonts/vt323/raw/main/fonts/ttf/VT323-Regular.ttf" \
+            curl -fsSL "https://github.com/googlefonts/vt323/raw/main/fonts/ttf/VT323-Regular.ttf" \
               -o fonts/VT323-Regular.ttf
           else
             echo "Czcionka już jest w repozytorium."
           fi
 
-      - name: Zbuduj .app (PyInstaller)
+      - name: Zbuduj universal2 .app (PyInstaller)
         run: |
-          pyinstaller familiada.spec --noconfirm
+          python3.12 -m PyInstaller familiada.spec --target-arch universal2 --noconfirm
 
       - name: Spakuj .app do ZIP
         run: |
