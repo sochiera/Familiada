@@ -11,7 +11,7 @@ class Answer:
 @dataclass(frozen=True)
 class Round:
     question: str   # pytanie wyświetlane nad tablicą
-    answers: tuple  # tuple of exactly 10 Answer objects
+    answers: tuple  # tuple of up to 11 Answer objects
 
 
 @dataclass(frozen=True)
@@ -19,7 +19,7 @@ class GameState:
     rounds:      tuple  # tuple of Round objects (all rounds, never mutated)
     round_index: int
     # 0 = hidden, 1 = word visible (score still hidden), 2 = fully revealed
-    revealed:    tuple  # tuple of 10 int
+    revealed:    tuple  # tuple of 11 int
     x_left:      tuple  # tuple of 3 bool — left-side X marks
     x_right:     tuple  # tuple of 3 bool — right-side X marks
     team1_score: int
@@ -31,7 +31,7 @@ def make_initial_state(rounds: list) -> GameState:
     return GameState(
         rounds=tuple(rounds),
         round_index=0,
-        revealed=(0,) * 10,
+        revealed=(0,) * 11,
         x_left=(False, False, False),
         x_right=(False, False, False),
         team1_score=0,
@@ -102,7 +102,7 @@ def action_transfer_to_team(state: GameState, team: int) -> GameState:
     return replace(
         state,
         round_index=next_round,
-        revealed=(0,) * 10,
+        revealed=(0,) * 11,
         x_left=(False, False, False),
         x_right=(False, False, False),
         team1_score=t1,

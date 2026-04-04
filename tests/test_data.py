@@ -116,11 +116,11 @@ def test_empty_directory_raises(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# Cykl 15b: maksymalnie 10 odpowiedzi
+# Cykl 15b: maksymalnie 11 odpowiedzi
 # ---------------------------------------------------------------------------
 
-def test_answers_capped_at_10(tmp_path):
+def test_answers_capped_at_11(tmp_path):
     odpowiedzi = [{"odpowiedz": f"ODP{i}", "punkty": i} for i in range(15)]
     write_round(tmp_path, "round01.json", "Q", odpowiedzi)
     rounds = load_rounds(str(tmp_path))
-    assert len(rounds[0].answers) == 10
+    assert len(rounds[0].answers) == 11

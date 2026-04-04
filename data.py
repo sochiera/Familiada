@@ -28,6 +28,6 @@ def load_rounds(rounds_dir: str = "rounds") -> list:
         ]
         rounds.append(Round(
             question=raw.get("pytanie", ""),
-            answers=tuple(answers[:10]),
+            answers=tuple(answers[:11]),
         ))
     return rounds

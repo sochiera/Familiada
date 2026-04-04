@@ -88,7 +88,7 @@ def test_suma_counts_only_state_2():
     state = make_state()
     # Manually set revealed[0]=1 (word only) and revealed[1]=2 (full)
     from dataclasses import replace
-    state = replace(state, revealed=(1, 2) + (0,) * 8)
+    state = replace(state, revealed=(1, 2) + (0,) * 9)
     round_ = state.rounds[0]
     expected = round_.answers[1].points   # only index 1 (state 2)
     assert compute_suma(state) == expected
@@ -97,7 +97,7 @@ def test_suma_counts_only_state_2():
 def test_suma_all_revealed():
     state = make_state(n_answers=6)
     from dataclasses import replace
-    state = replace(state, revealed=(2,) * 6 + (0,) * 4)
+    state = replace(state, revealed=(2,) * 6 + (0,) * 5)
     total = sum(a.points for a in state.rounds[0].answers)
     assert compute_suma(state) == total
 
@@ -116,7 +116,7 @@ def test_reveal_full_noop_if_word_visible():
     """Row already in state 1 (word only) — should NOT change."""
     from dataclasses import replace
     state = make_state()
-    state = replace(state, revealed=(1,) + (0,) * 9)
+    state = replace(state, revealed=(1,) + (0,) * 10)
     same = action_reveal_full(state, 0)
     assert same is state
 
@@ -124,7 +124,7 @@ def test_reveal_full_noop_if_word_visible():
 def test_reveal_full_noop_if_already_full():
     from dataclasses import replace
     state = make_state()
-    state = replace(state, revealed=(2,) + (0,) * 9)
+    state = replace(state, revealed=(2,) + (0,) * 10)
     same = action_reveal_full(state, 0)
     assert same is state
 
@@ -133,7 +133,7 @@ def test_reveal_full_only_changes_target_row():
     state = make_state()
     new = action_reveal_full(state, 2)
     assert new.revealed[2] == 2
-    assert all(new.revealed[i] == 0 for i in range(10) if i != 2)
+    assert all(new.revealed[i] == 0 for i in range(11) if i != 2)
 
 
 def test_reveal_full_returns_new_object():
@@ -149,7 +149,7 @@ def test_reveal_full_returns_new_object():
 def test_reveal_score_1_to_2():
     from dataclasses import replace
     state = make_state()
-    state = replace(state, revealed=(1,) + (0,) * 9)
+    state = replace(state, revealed=(1,) + (0,) * 10)
     new = action_reveal_score(state, 0)
     assert new.revealed[0] == 2
 
@@ -163,7 +163,7 @@ def test_reveal_score_noop_if_hidden():
 def test_reveal_score_noop_if_already_2():
     from dataclasses import replace
     state = make_state()
-    state = replace(state, revealed=(2,) + (0,) * 9)
+    state = replace(state, revealed=(2,) + (0,) * 10)
     same = action_reveal_score(state, 0)
     assert same is state
 
@@ -224,7 +224,7 @@ def _state_with_revealed(points_per_answer=10, n_answers=3, n_rounds=2):
     round_ = Round(question="Q", answers=answers)
     from dataclasses import replace as dc_replace
     state = make_initial_state([round_] * n_rounds)
-    revealed = (2,) * n_answers + (0,) * (10 - n_answers)
+    revealed = (2,) * n_answers + (0,) * (11 - n_answers)
     return dc_replace(state, revealed=revealed)
 
 
@@ -248,7 +248,7 @@ def test_transfer_accumulates_scores_across_rounds():
     state = action_transfer_to_team(state, 1)
     # Round 1 — same answers but from dataclass replace, revealed already reset
     from dataclasses import replace as dc_replace
-    state = dc_replace(state, revealed=(2,) * 3 + (0,) * 7)
+    state = dc_replace(state, revealed=(2,) * 3 + (0,) * 8)
     state = action_transfer_to_team(state, 1)
     assert state.team1_score == 60
 
