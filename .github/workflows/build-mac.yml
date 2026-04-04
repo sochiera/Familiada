@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-13   # Intel x86_64 — działa na Intel i Apple Silicon (Rosetta 2)
 
     steps:
       - name: Pobierz kod
