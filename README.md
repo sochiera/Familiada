@@ -30,12 +30,23 @@ xattr -cr /path/to/Familiada.app
 
 Aplikacja uruchamia się w trybie **pełnoekranowym**. Domyślna rozdzielczość to **2560×1440** (2K).
 
-Jeśli monitor nie jest 2K, zmień preset **przed** uruchomieniem:
+#### Zmiana rozdzielczości — metoda prosta (zalecana)
 
-1. Prawy przycisk na `Familiada.app` → **Pokaż zawartość pakietu**
-2. Przejdź do `Contents/MacOS/`
-3. Otwórz plik `config.ini` dowolnym edytorem tekstu
-4. Zmień wartość `preset` na odpowiednią dla monitora:
+Połóż plik `config.ini` **obok** `Familiada.app` na pendrivie i otwórz go dowolnym edytorem tekstu (np. TextEdit). Aplikacja automatycznie go wykryje i użyje zamiast wbudowanego:
+
+```
+pendrive/
+├── Familiada.app
+└── config.ini        ← edytuj ten plik
+```
+
+Zawartość `config.ini`:
+```ini
+[display]
+preset = 1920x1080
+```
+
+Dostępne wartości `preset`:
 
 | preset | rozdzielczość |
 |--------|--------------|
@@ -44,6 +55,14 @@ Jeśli monitor nie jest 2K, zmień preset **przed** uruchomieniem:
 | `1280x720` | fullscreen HD |
 | `1024x768` | fullscreen 4:3 |
 | `windowed` | okno 1280×720 |
+
+#### Zmiana rozdzielczości — metoda alternatywna (wewnątrz .app)
+
+Jeśli nie ma zewnętrznego `config.ini`, aplikacja użyje wbudowanego:
+
+1. Prawy przycisk na `Familiada.app` → **Pokaż zawartość pakietu**
+2. Przejdź do `Contents/MacOS/_internal/` (lub `Contents/MacOS/`)
+3. Otwórz `config.ini` i zmień wartość `preset`
 
 ### 4. Wyjście z gry
 

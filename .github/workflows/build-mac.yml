@@ -28,14 +28,14 @@ jobs:
           python3.12 -m pip install --upgrade pip
           python3.12 -m pip install pygame pyinstaller
 
-      - name: Pobierz czcionkę VT323 (jeśli nie ma w repo)
+      - name: Sprawdź czcionkę VT323 (powinna być w repo)
         run: |
           if [ ! -f fonts/VT323-Regular.ttf ]; then
-            echo "Pobieranie czcionki VT323..."
-            curl -fsSL "https://github.com/googlefonts/vt323/raw/main/fonts/ttf/VT323-Regular.ttf" \
+            echo "Brak czcionki w repo — pobieram z google/fonts..."
+            curl -fsSL "https://raw.githubusercontent.com/google/fonts/main/ofl/vt323/VT323-Regular.ttf" \
               -o fonts/VT323-Regular.ttf
           else
-            echo "Czcionka już jest w repozytorium."
+            echo "Czcionka obecna w repozytorium."
           fi
 
       - name: Zbuduj universal2 .app (PyInstaller)

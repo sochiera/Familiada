@@ -9,6 +9,23 @@ def _base_dir() -> pathlib.Path:
         return pathlib.Path(sys._MEIPASS)
     return pathlib.Path(__file__).parent
 
+
+def _config_path() -> pathlib.Path:
+    """
+    Szuka config.ini w dwóch miejscach (kolejność ma znaczenie):
+    1. Obok pliku Familiada.app — łatwy dostęp z pendrive'a bez wchodzenia w pakiet
+    2. Wewnątrz .app — domyślny fallback
+
+    sys.executable w zamrożonej aplikacji wskazuje na:
+      Familiada.app/Contents/MacOS/Familiada
+    Trzy poziomy wyżej to katalog zawierający .app (np. główny folder pendrive'a).
+    """
+    if getattr(sys, "frozen", False):
+        external = pathlib.Path(sys.executable).parents[3] / "config.ini"
+        if external.exists():
+            return external
+    return _base_dir() / "config.ini"
+
 PRESETS: dict[str, tuple[int, int, bool]] = {
     "2560x1440": (2560, 1440, True),
     "1920x1080": (1920, 1080, True),
@@ -21,7 +38,7 @@ PRESETS: dict[str, tuple[int, int, bool]] = {
 
 def _load() -> tuple[int, int, bool]:
     cfg = configparser.ConfigParser()
-    cfg.read(_base_dir() / "config.ini")
+    cfg.read(_config_path())
     preset = cfg.get("display", "preset", fallback="1920x1080").strip()
     if preset not in PRESETS:
         print(f"[config] Nieznany preset '{preset}', uzywam 1920x1080")
