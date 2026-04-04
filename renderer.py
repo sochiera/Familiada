@@ -4,12 +4,12 @@ import pygame
 
 from layout import (
     SCREEN_W, SCREEN_H,
-    BOARD_LEFT, BOARD_TOP, BOARD_WIDTH, BOARD_HEIGHT,
-    ROW_HEIGHT, ROW_PADDING_TOP, ROWS,
+    BOARD_LEFT, BOARD_TOP, BOARD_WIDTH,
+    ROW_HEIGHT, ROW_PADDING_TOP,
     LEFT_X_ZONES, RIGHT_X_ZONES,
     LEFT_BIG_X_RECT, RIGHT_BIG_X_RECT,
     TEAM1_RECT, TEAM2_RECT,
-    COFNIJ_RECT, SUMA_Y,
+    COFNIJ_RECT,
     BLACK, GREEN, GREEN_DIM, GREEN_BORDER, RED, YELLOW,
 )
 from state import compute_suma
@@ -59,7 +59,7 @@ def load_fonts() -> dict:
         return pygame.font.Font(resolved_path, size)
 
     return {
-        "board": F(52),   # answer rows
+        "board": F(40),   # answer rows
         "score": F(64),   # team score numbers
         "label": F(42),   # SUMA label, team labels
         "x":     F(200),  # large X — will be scaled down to fit the box
@@ -108,12 +108,16 @@ def draw_background(surface: pygame.Surface) -> None:
 
 
 def draw_board_panel(surface: pygame.Surface, state, fonts: dict) -> None:
+    round_ = state.rounds[state.round_index]
+    n = len(round_.answers)
+    board_h = ROW_PADDING_TOP + n * ROW_HEIGHT + 80
+    suma_y = BOARD_TOP + ROW_PADDING_TOP + n * ROW_HEIGHT + 20
+
     # Border
-    board_rect = pygame.Rect(BOARD_LEFT, BOARD_TOP, BOARD_WIDTH, BOARD_HEIGHT)
+    board_rect = pygame.Rect(BOARD_LEFT, BOARD_TOP, BOARD_WIDTH, board_h)
     pygame.draw.rect(surface, GREEN_BORDER, board_rect, 4)
 
-    # 6 answer rows
-    round_ = state.rounds[state.round_index]
+    # Answer rows
     for i, ans in enumerate(round_.answers):
         rev = state.revealed[i]  # 0, 1, or 2
         row_str = build_row_string(ans.rank, ans.text, rev, ans.points)
@@ -124,7 +128,7 @@ def draw_board_panel(surface: pygame.Surface, state, fonts: dict) -> None:
     # SUMA line
     suma = compute_suma(state)
     suma_surf = fonts["label"].render(f"SUMA  {suma}", True, GREEN)
-    suma_rect = suma_surf.get_rect(center=(BOARD_LEFT + BOARD_WIDTH // 2, SUMA_Y))
+    suma_rect = suma_surf.get_rect(center=(BOARD_LEFT + BOARD_WIDTH // 2, suma_y))
     surface.blit(suma_surf, suma_rect)
 
 

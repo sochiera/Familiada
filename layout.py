@@ -7,11 +7,11 @@ SCREEN_H = 1080
 BOARD_LEFT   = 360
 BOARD_TOP    = 100
 BOARD_WIDTH  = 1200
-BOARD_HEIGHT = 700  # 6 rows + SUMA line + padding
+BOARD_HEIGHT = 760  # 10 rows + SUMA line + padding
 
-ROW_HEIGHT      = 90
-ROW_PADDING_TOP = 30
-ROWS = 6
+ROW_HEIGHT      = 65
+ROW_PADDING_TOP = 20
+ROWS = 10
 
 # Width of the score click zone on the right edge of each row.
 # Clicking this area reveals the score (step 2 of two-step reveal).

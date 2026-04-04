@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from data import load_rounds
-from layout import COFNIJ_RECT, LEFT_X_ZONES, RIGHT_X_ZONES, ROWS
+from layout import COFNIJ_RECT, LEFT_X_ZONES, RIGHT_X_ZONES
 from layout import TEAM1_RECT, TEAM2_RECT
 from layout import get_row_text_rect, get_row_score_rect
 from renderer import load_fonts, render_frame
@@ -41,7 +41,8 @@ def handle_click(pos: tuple, ctx: dict, push, sounds: SoundManager, rounds: list
     # Answer rows — single-click reveal (word + points at once):
     #   click on text/dots area → reveal word and score (0 → 2)
     #   click on score area     → reveal score if word already shown (1 → 2)
-    for i in range(ROWS):
+    n_rows = len(state.rounds[state.round_index].answers)
+    for i in range(n_rows):
         if get_row_text_rect(i).collidepoint(pos):
             new_state = action_reveal_full(state, i)
             if new_state is not state:

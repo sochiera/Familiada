@@ -12,8 +12,7 @@ def load_rounds(rounds_dir: str = "rounds") -> list:
           "pytanie": "...",
           "odpowiedzi": [{"odpowiedz": "...", "punkty": 45}, ...]
         }
-    Answers are taken in order; padded with blanks if fewer than 6.
-    Only the first 6 answers are shown on the board.
+    Answers are taken in order, up to 10. No blank padding.
     """
     p = pathlib.Path(rounds_dir)
     files = sorted(p.glob("round*.json"))
@@ -27,11 +26,8 @@ def load_rounds(rounds_dir: str = "rounds") -> list:
             Answer(rank=i + 1, text=a["odpowiedz"].upper(), points=a["punkty"])
             for i, a in enumerate(raw["odpowiedzi"])
         ]
-        # Pad to exactly 6 answers if the JSON has fewer
-        while len(answers) < 6:
-            answers.append(Answer(rank=len(answers) + 1, text="", points=0))
         rounds.append(Round(
             question=raw.get("pytanie", ""),
-            answers=tuple(answers[:6]),
+            answers=tuple(answers[:10]),
         ))
     return rounds
