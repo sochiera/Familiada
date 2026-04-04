@@ -22,6 +22,8 @@ class GameState:
     revealed:    tuple  # tuple of 11 int
     x_left:      tuple  # tuple of 3 bool — left-side X marks
     x_right:     tuple  # tuple of 3 bool — right-side X marks
+    big_x_left:  bool   # large X on the far-left panel
+    big_x_right: bool   # large X on the far-right panel
     team1_score: int
     team2_score: int
     phase:       str    # "playing" | "gameover"
@@ -34,6 +36,8 @@ def make_initial_state(rounds: list) -> GameState:
         revealed=(0,) * 11,
         x_left=(False, False, False),
         x_right=(False, False, False),
+        big_x_left=False,
+        big_x_right=False,
         team1_score=0,
         team2_score=0,
         phase="playing",
@@ -86,6 +90,20 @@ def action_add_x_right(state: GameState, zone: int) -> GameState:
     return replace(state, x_right=tuple(lst))
 
 
+def action_add_big_x_left(state: GameState) -> GameState:
+    """Toggle the large left X. No-op if already filled."""
+    if state.big_x_left:
+        return state
+    return replace(state, big_x_left=True)
+
+
+def action_add_big_x_right(state: GameState) -> GameState:
+    """Toggle the large right X. No-op if already filled."""
+    if state.big_x_right:
+        return state
+    return replace(state, big_x_right=True)
+
+
 def action_transfer_to_team(state: GameState, team: int) -> GameState:
     """
     Add current SUMA to team (1 or 2). Advance to next round (clearing the
@@ -105,6 +123,8 @@ def action_transfer_to_team(state: GameState, team: int) -> GameState:
         revealed=(0,) * 11,
         x_left=(False, False, False),
         x_right=(False, False, False),
+        big_x_left=False,
+        big_x_right=False,
         team1_score=t1,
         team2_score=t2,
         phase="playing",

@@ -4,6 +4,7 @@ import pygame
 
 from data import load_rounds
 from layout import COFNIJ_RECT, LEFT_X_ZONES, RIGHT_X_ZONES
+from layout import LEFT_BIG_X_RECT, RIGHT_BIG_X_RECT
 from layout import TEAM1_RECT, TEAM2_RECT
 from layout import get_row_text_rect, get_row_score_rect
 from renderer import load_fonts, render_frame
@@ -12,6 +13,8 @@ from state import (
     GameState,
     action_add_x_left,
     action_add_x_right,
+    action_add_big_x_left,
+    action_add_big_x_right,
     action_reveal_full,
     action_reveal_score,
     action_transfer_to_team,
@@ -74,6 +77,21 @@ def handle_click(pos: tuple, ctx: dict, push, sounds: SoundManager, rounds: list
                 push(new_state)
                 sounds.play_wrong()
             return
+
+    # Large X panels (outermost)
+    if LEFT_BIG_X_RECT.collidepoint(pos):
+        new_state = action_add_big_x_left(state)
+        if new_state is not state:
+            push(new_state)
+            sounds.play_wrong()
+        return
+
+    if RIGHT_BIG_X_RECT.collidepoint(pos):
+        new_state = action_add_big_x_right(state)
+        if new_state is not state:
+            push(new_state)
+            sounds.play_wrong()
+        return
 
     # Team score counters
     if TEAM1_RECT.collidepoint(pos):

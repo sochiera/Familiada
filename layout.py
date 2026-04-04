@@ -32,11 +32,11 @@ RIGHT_X_ZONES = [
 ]
 
 # Single large X on the outermost side of each XXX panel.
-# Same width as a small X zone, 3× the height, vertically centred on the 3 zones.
-_BIG_X_H = X_ZONE_H * 3          # 390
-_BIG_X_Y = 220 + (X_ZONE_H * 3 - _BIG_X_H) // 2  # = 220 (top-aligned with top zone)
-LEFT_BIG_X_RECT  = pygame.Rect(200 - X_ZONE_W,       _BIG_X_Y, X_ZONE_W, _BIG_X_H)
-RIGHT_BIG_X_RECT = pygame.Rect(1590 + X_ZONE_W,      _BIG_X_Y, X_ZONE_W, _BIG_X_H)
+# Spans from the top of the first small zone to the bottom of the last small zone.
+_BIG_X_Y = LEFT_X_ZONES[0].top                        # = 220
+_BIG_X_H = LEFT_X_ZONES[2].bottom - _BIG_X_Y          # = 690 − 220 = 470
+LEFT_BIG_X_RECT  = pygame.Rect(200 - X_ZONE_W,        _BIG_X_Y, X_ZONE_W, _BIG_X_H)
+RIGHT_BIG_X_RECT = pygame.Rect(1590 + X_ZONE_W,       _BIG_X_Y, X_ZONE_W, _BIG_X_H)
 
 # Team score counters (bottom corners)
 TEAM1_RECT = pygame.Rect(60,   900, 300, 140)

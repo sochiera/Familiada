@@ -143,11 +143,13 @@ def draw_x_zones(surface: pygame.Surface, state, fonts: dict) -> None:
         if state.x_right[i]:
             _draw_x_in_rect(surface, rect, fonts)
 
-    # Large static X on the outermost side (same width, 3× height)
+    # Large X on the outermost side — shown only when clicked (like small zones)
     pygame.draw.rect(surface, GREEN_DIM, LEFT_BIG_X_RECT, 2)
-    _draw_x_in_rect(surface, LEFT_BIG_X_RECT, fonts)
+    if state.big_x_left:
+        _draw_x_in_rect(surface, LEFT_BIG_X_RECT, fonts)
     pygame.draw.rect(surface, GREEN_DIM, RIGHT_BIG_X_RECT, 2)
-    _draw_x_in_rect(surface, RIGHT_BIG_X_RECT, fonts)
+    if state.big_x_right:
+        _draw_x_in_rect(surface, RIGHT_BIG_X_RECT, fonts)
 
 
 def draw_team_scores(surface: pygame.Surface, state, fonts: dict) -> None:
