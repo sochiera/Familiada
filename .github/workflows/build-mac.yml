@@ -40,7 +40,7 @@ jobs:
 
       - name: Zbuduj universal2 .app (PyInstaller)
         run: |
-          python3.12 -m PyInstaller familiada.spec --target-arch universal2 --noconfirm
+          python3.12 -m PyInstaller familiada.spec --noconfirm
 
       - name: Spakuj .app do ZIP
         run: |

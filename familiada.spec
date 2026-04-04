@@ -48,7 +48,7 @@ exe = EXE(
     upx=True,
     console=False,          # brak okna terminala
     disable_windowed_traceback=False,
-    target_arch=None,
+    target_arch='universal2',
     codesign_identity=None,
     entitlements_file=None,
 )
