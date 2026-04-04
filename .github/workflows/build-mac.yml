@@ -23,10 +23,12 @@ jobs:
           sudo installer -pkg python.pkg -target /
           echo "/Library/Frameworks/Python.framework/Versions/3.12/bin" >> $GITHUB_PATH
 
-      - name: Zainstaluj zależności
+      - name: Zainstaluj zależności (x86_64 przez Rosettę)
         run: |
-          python3.12 -m pip install --upgrade pip
-          python3.12 -m pip install pygame pyinstaller
+          # arch -x86_64 sprawia że pip pobiera wersje Intel zamiast arm64.
+          # Wymaga universal2 Pythona z python.org (zainstalowanego wyżej).
+          arch -x86_64 python3.12 -m pip install --upgrade pip
+          arch -x86_64 python3.12 -m pip install pygame pyinstaller
 
       - name: Sprawdź czcionkę VT323 (powinna być w repo)
         run: |
@@ -38,9 +40,9 @@ jobs:
             echo "Czcionka obecna w repozytorium."
           fi
 
-      - name: Zbuduj universal2 .app (PyInstaller)
+      - name: Zbuduj x86_64 .app (PyInstaller przez Rosettę)
         run: |
-          python3.12 -m PyInstaller familiada.spec --noconfirm
+          arch -x86_64 python3.12 -m PyInstaller familiada.spec --noconfirm
 
       - name: Spakuj .app do ZIP
         run: |
