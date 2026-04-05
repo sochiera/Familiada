@@ -13,15 +13,20 @@ def _base_dir() -> pathlib.Path:
 def _config_path() -> pathlib.Path:
     """
     Szuka config.ini w dwóch miejscach (kolejność ma znaczenie):
-    1. Obok pliku Familiada.app — łatwy dostęp z pendrive'a bez wchodzenia w pakiet
-    2. Wewnątrz .app — domyślny fallback
+    1. Obok aplikacji — łatwy dostęp z pendrive'a bez wchodzenia w pakiet
+    2. Wewnątrz paczki — domyślny fallback
 
-    sys.executable w zamrożonej aplikacji wskazuje na:
-      Familiada.app/Contents/MacOS/Familiada
-    Trzy poziomy wyżej to katalog zawierający .app (np. główny folder pendrive'a).
+    macOS: sys.executable → Familiada.app/Contents/MacOS/Familiada
+           Trzy poziomy wyżej = katalog zawierający .app
+    Windows: sys.executable → Familiada/Familiada.exe
+             Jeden poziom wyżej = katalog zawierający folder Familiada
     """
     if getattr(sys, "frozen", False):
-        external = pathlib.Path(sys.executable).parents[3] / "config.ini"
+        if sys.platform == "darwin":
+            external = pathlib.Path(sys.executable).parents[3] / "config.ini"
+        else:
+            # Windows/Linux: exe jest w Familiada/, config obok tego folderu
+            external = pathlib.Path(sys.executable).parent / "config.ini"
         if external.exists():
             return external
     return _base_dir() / "config.ini"

@@ -1,0 +1,65 @@
+# -*- mode: python ; coding: utf-8 -*-
+#
+# PyInstaller spec file for Familiada (Windows .exe)
+# Build command:  pyinstaller familiada_win.spec
+
+block_cipher = None
+
+a = Analysis(
+    ['main.py'],
+    pathex=['.'],
+    binaries=[],
+    datas=[
+        ('rounds',  'rounds'),
+        ('sounds',  'sounds'),
+        ('fonts',   'fonts'),
+        ('config.ini', '.'),
+    ],
+    hiddenimports=[
+        'pygame',
+        'pygame.mixer',
+        'pygame.font',
+        'pygame.display',
+        'pygame.event',
+        'pygame.image',
+        'pygame.transform',
+    ],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='Familiada',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=False,          # brak okna konsoli
+    disable_windowed_traceback=False,
+    codesign_identity=None,
+    entitlements_file=None,
+    icon=None,              # opcjonalnie: 'icon.ico'
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='Familiada',
+)

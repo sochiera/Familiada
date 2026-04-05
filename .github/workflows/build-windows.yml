@@ -1,0 +1,53 @@
+name: Build Windows .exe
+
+on:
+  # Uruchom ręcznie z zakładki Actions na GitHub
+  workflow_dispatch:
+  # Lub automatycznie przy pushu na main
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Pobierz kod
+        uses: actions/checkout@v4
+
+      - name: Zainstaluj Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Zainstaluj zależności
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pygame pyinstaller
+
+      - name: Sprawdź czcionkę VT323 (powinna być w repo)
+        shell: bash
+        run: |
+          if [ ! -f fonts/VT323-Regular.ttf ]; then
+            echo "Brak czcionki w repo — pobieram z google/fonts..."
+            curl -fsSL "https://raw.githubusercontent.com/google/fonts/main/ofl/vt323/VT323-Regular.ttf" \
+              -o fonts/VT323-Regular.ttf
+          else
+            echo "Czcionka obecna w repozytorium."
+          fi
+
+      - name: Zbuduj .exe (PyInstaller)
+        run: |
+          python -m PyInstaller familiada_win.spec --noconfirm
+
+      - name: Spakuj do ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist\Familiada -DestinationPath Familiada-Windows.zip
+
+      - name: Wgraj artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: Familiada-Windows
+          path: Familiada-Windows.zip
+          retention-days: 30
